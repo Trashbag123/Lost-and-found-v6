@@ -48,7 +48,7 @@ export function Footer() {
                 { icon: Twitter, label: 'Twitter' },
                 { icon: Instagram, label: 'Instagram' },
                 { icon: Github, label: 'Github' }
-              ].map((social, idx) => (
+              ].map((social) => (
                 <a
                   key={social.label}
                   href="#"
@@ -76,8 +76,8 @@ export function Footer() {
                 { to: '/items', label: 'Browse Items' },
                 { to: '/submit', label: 'Report Item' },
                 { to: '/claims', label: 'Claims Portal' }
-              ].map((link, idx) => (
-                <li key={social.label}>
+              ].map((link) => (
+                <li key={link.label}>
                   <Link 
                     to={link.to}
                     className="text-sm hover:translate-x-2 inline-block transition-transform"
@@ -102,8 +102,8 @@ export function Footer() {
                 { to: '/terms', label: 'Terms of Service' },
                 { to: '/privacy', label: 'Privacy Policy' },
                 { to: '/accessibility', label: 'Accessibility' }
-              ].map((item, idx) => (
-                <li key={social.label}>
+              ].map((item) => (
+                <li key={item.label}>
                   <Link 
                     to={item.to}
                     className="text-sm hover:translate-x-2 inline-block transition-transform"
