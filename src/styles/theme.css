@@ -1,0 +1,372 @@
+@import './tailwind.css';
+
+@theme {
+  /* Neon Color Palette - Electric & Vibrant */
+  --color-primary: #FF0080;
+  --color-primary-hover: #FF4DA6;
+  --color-primary-light: #FF66B2;
+  --color-secondary: #00F0FF;
+  --color-secondary-hover: #4DF4FF;
+  --color-accent: #8A2BE2;
+  --color-accent-hover: #A855F7;
+  --color-success: #00FF88;
+  --color-warning: #FFD700;
+  --color-error: #FF0055;
+  
+  /* Default Dark Neon Backgrounds */
+  --color-background: #000000;
+  --color-surface: #0A0118;
+  --color-surface-elevated: #160729;
+  --color-border: rgba(138, 43, 226, 0.5);
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E0E0FF;
+  --color-text-muted: #B0B0E8;
+  
+  /* Neon Gradients - Electric */
+  --gradient-primary: linear-gradient(135deg, #FF0080 0%, #FF4DA6 100%);
+  --gradient-secondary: linear-gradient(135deg, #00F0FF 0%, #4DF4FF 100%);
+  --gradient-accent: linear-gradient(135deg, #8A2BE2 0%, #A855F7 100%);
+  --gradient-hero: linear-gradient(135deg, #FF0080 0%, #00F0FF 50%, #8A2BE2 100%);
+  
+  /* Neon Shadows - Glowing */
+  --shadow-sm: 0 1px 3px 0 rgba(255, 0, 128, 0.3);
+  --shadow-md: 0 4px 8px -2px rgba(255, 0, 128, 0.4);
+  --shadow-lg: 0 12px 24px -4px rgba(255, 0, 128, 0.5);
+  --shadow-xl: 0 20px 40px -8px rgba(255, 0, 128, 0.6);
+  --shadow-colored: 0 0 30px rgba(255, 0, 128, 0.6), 0 0 60px rgba(0, 240, 255, 0.4);
+  
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+/* Light mode overrides */
+.light {
+  --color-background: #FFFFFF;
+  --color-surface: #FAFBFF;
+  --color-surface-elevated: #F0F4FF;
+  --color-border: rgba(255, 0, 128, 0.4);
+  --color-text-primary: #0A0118;
+  --color-text-secondary: #2D1B4E;
+  --color-text-muted: #5A4D7C;
+}
+
+/* Dark mode overrides */
+.dark {
+  --color-background: #000000;
+  --color-surface: #0A0118;
+  --color-surface-elevated: #160729;
+  --color-border: rgba(138, 43, 226, 0.5);
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E0E0FF;
+  --color-text-muted: #B0B0E8;
+}
+
+/* Global neon glow animations */
+@keyframes neon-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 15px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 30px currentColor);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.4), 0 0 40px rgba(0, 240, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.6), 0 0 60px rgba(0, 240, 255, 0.4);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes rainbow-pulse {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(30deg) brightness(1.2);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.8;
+  }
+  43% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.9;
+  }
+  46% {
+    opacity: 1;
+  }
+}
+
+/* Apply animations */
+.animate-neon-glow {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(22, 7, 41, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+.glass-hover:hover {
+  background: rgba(22, 7, 41, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Neon border glow */
+.neon-border {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #FF0080, #00F0FF, #8A2BE2) 1;
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Focus states */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Super flashy button glow */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-glow:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor,
+    0 0 40px currentColor;
+}
+
+/* Ultra glow on hover */
+.ultra-glow:hover {
+  box-shadow: 
+    0 0 20px currentColor,
+    0 0 40px currentColor,
+    0 0 60px currentColor !important;
+  transform: scale(1.05);
+}
+
+/* Light mode specific glows */
+.light .glow-light {
+  box-shadow: 0 4px 20px rgba(255, 0, 128, 0.3);
+}
+
+.light .glow-light:hover {
+  box-shadow: 0 8px 30px rgba(255, 0, 128, 0.5);
+}
+
+/* Dark mode specific glows */
+.dark .glow-dark {
+  box-shadow: 0 4px 20px rgba(255, 0, 153, 0.6), 0 0 40px rgba(0, 255, 255, 0.4);
+}
+
+.dark .glow-dark:hover {
+  box-shadow: 0 8px 40px rgba(255, 0, 153, 0.8), 0 0 60px rgba(0, 255, 255, 0.6);
+}
