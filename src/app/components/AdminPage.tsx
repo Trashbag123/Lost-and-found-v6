@@ -56,12 +56,13 @@ export function AdminPage() {
     return items.find(item => item.id === itemId);
   };
 
-  // Analytics data
+  // count how many items belong to each category for the bar chart
   const categoryData = items.reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
+  // recharts needs an array of objects, not a plain object
   const chartData = Object.entries(categoryData).map(([name, value]) => ({ name, value }));
 
   const statusData = [
@@ -70,14 +71,15 @@ export function AdminPage() {
     { name: 'Pending', value: pendingItems.length }
   ];
 
+  // just grab the 5 most recent submissions for the activity feed
   const recentActivity = [...items]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
-  // Define colors dynamically from theme
+  // pull chart colors from the theme so they match whatever mode is active
   const COLORS = [getColor('accent1'), getColor('accent2'), getColor('accent3')];
-  
-  // Filter out zero values for pie chart
+
+  // recharts breaks if you pass zero-value slices to the pie chart
   const filteredStatusData = statusData.filter(item => item.value > 0);
 
   return (

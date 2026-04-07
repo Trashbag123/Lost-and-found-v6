@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { Package2, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Github } from 'lucide-react';
+import { Package2 } from 'lucide-react';
 import { useTheme } from '@/app/contexts/ThemeContext';
 
 export function Footer() {
@@ -7,7 +7,9 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer 
+    <footer
+      role="contentinfo"
+      aria-label="Site footer"
       className="relative border-t-2 z-10"
       style={{ 
         backgroundColor: getColor('bgCard'),
@@ -37,32 +39,9 @@ export function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: getColor('textSecondary') }}>
-              Connecting students with their lost belongings through innovative technology and community trust.
+            <p className="text-sm leading-relaxed" style={{ color: getColor('textSecondary') }}>
+              Helping students reunite with lost belongings across campus.
             </p>
-            
-            {/* Social links */}
-            <div className="flex gap-3">
-              {[
-                { icon: Facebook, label: 'Facebook' },
-                { icon: Twitter, label: 'Twitter' },
-                { icon: Instagram, label: 'Instagram' },
-                { icon: Github, label: 'Github' }
-              ].map((social) => (
-                <a
-                  key={social.label}
-                  href="#"
-                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-all hover:scale-110"
-                  style={{ 
-                    backgroundColor: `${getColor('accent1')}20`,
-                    color: getColor('textSecondary')
-                  }}
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div>
           </div>
           
           {/* Quick links */}
@@ -101,7 +80,8 @@ export function Footer() {
                 { to: '/faq', label: 'FAQs' },
                 { to: '/terms', label: 'Terms of Service' },
                 { to: '/privacy', label: 'Privacy Policy' },
-                { to: '/accessibility', label: 'Accessibility' }
+                { to: '/accessibility', label: 'Accessibility' },
+                { to: '/attributions', label: 'Attributions' }
               ].map((item) => (
                 <li key={item.label}>
                   <Link 
@@ -121,27 +101,10 @@ export function Footer() {
             <h3 className="font-black text-lg mb-6" style={{ color: getColor('textPrimary') }}>
               Contact Us
             </h3>
-            <ul className="space-y-5">
-              <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" style={{ color: getColor('accent1') }} />
-                <span className="text-sm" style={{ color: getColor('textSecondary') }}>
-                  123 Campus Drive<br />
-                  University Hall, Room 105<br />
-                  City, ST 12345
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="h-5 w-5 flex-shrink-0" style={{ color: getColor('accent2') }} />
-                <span className="text-sm" style={{ color: getColor('textSecondary') }}>
-                  (555) 123-4567
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail className="h-5 w-5 flex-shrink-0" style={{ color: getColor('accent3') }} />
-                <span className="text-sm" style={{ color: getColor('textSecondary') }}>
-                  lostandfound@school.edu
-                </span>
-              </li>
+            <ul className="space-y-3 text-sm" style={{ color: getColor('textSecondary') }}>
+              <li>Main Office — Administration Building</li>
+              <li>Contact the front office</li>
+              <li>lostandfound@school.edu</li>
             </ul>
           </div>
           
@@ -157,27 +120,27 @@ export function Footer() {
           </div>
           
           <div className="flex gap-6 text-sm">
-            <a 
-              href="#" 
+            <Link
+              to="/terms"
               className="hover:opacity-70 transition-opacity"
               style={{ color: getColor('textTertiary') }}
             >
               Terms
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link
+              to="/privacy"
               className="hover:opacity-70 transition-opacity"
               style={{ color: getColor('textTertiary') }}
             >
               Privacy
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link
+              to="/accessibility"
               className="hover:opacity-70 transition-opacity"
               style={{ color: getColor('textTertiary') }}
             >
-              Cookies
-            </a>
+              Accessibility
+            </Link>
           </div>
         </div>
       </div>

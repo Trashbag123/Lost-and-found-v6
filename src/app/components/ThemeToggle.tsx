@@ -82,11 +82,10 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="w-64 rounded-xl border-2 shadow-2xl backdrop-blur-xl"
+        className="w-64 rounded-xl border shadow-2xl"
         style={{
-          backgroundColor: `${getColor('bgCard')}f0`,
-          borderColor: `${getColor('accent1')}40`,
-          boxShadow: `0 0 30px ${getColor('accent1')}30`,
+          backgroundColor: getColor('bgCard'),
+          borderColor: getColor('border'),
         }}
       >
         <DropdownMenuLabel style={{ color: getColor('textPrimary') }}>
@@ -129,7 +128,7 @@ export function ThemeToggle() {
           </div>
         </DropdownMenuLabel>
 
-        {(['ultra', 'high', 'medium', 'low'] as PerformanceLevel[]).map((level) => (
+        {(['high', 'medium', 'low'] as PerformanceLevel[]).map((level) => (
           <DropdownMenuItem
             key={level}
             onClick={() => setPerformanceLevel(level)}
@@ -149,7 +148,6 @@ export function ThemeToggle() {
                 )}
               </div>
               <div className="text-xs" style={{ color: getColor('textSecondary') }}>
-                {level === 'ultra' && 'Maximum effects - Requires high-end GPU'}
                 {level === 'high' && 'Maximum effects & animations'}
                 {level === 'medium' && 'Balanced quality & performance'}
                 {level === 'low' && 'Minimal effects for best performance'}

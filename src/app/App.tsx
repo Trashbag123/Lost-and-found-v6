@@ -1,5 +1,5 @@
 // ─── Third-party imports ─────────────────────────────────────────────────────
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router';
 
 // ─── Context providers ────────────────────────────────────────────────────────
@@ -10,14 +10,19 @@ import { NotificationsProvider } from '@/app/contexts/NotificationsContext';
 import { ThemeProvider, useTheme } from '@/app/contexts/ThemeContext';
 
 // ─── Layout components ────────────────────────────────────────────────────────
-import { AnimatedBackground } from '@/app/components/AnimatedBackground';
+import { Footer } from '@/app/components/layout/Footer';
+import { NavBar } from '@/app/components/layout/NavBar';
+import { ScrollToTop } from '@/app/components/layout/ScrollToTop';
+
+// ─── Visual effects ───────────────────────────────────────────────────────────
+import { AnimatedBackground } from '@/app/components/effects/AnimatedBackground';
+import { FloatingShapes } from '@/app/components/effects/FloatingShapes';
+import { UltraBackground } from '@/app/components/effects/UltraBackground';
+
+// ─── Other shared components ──────────────────────────────────────────────────
 import { CustomerServiceBot } from '@/app/components/CustomerServiceBot';
-import { FloatingShapes } from '@/app/components/FloatingShapes';
-import { Footer } from '@/app/components/Footer';
-import { NavBar } from '@/app/components/NavBar';
-import { ScrollToTop } from '@/app/components/ScrollToTop';
-import { UltraBackground } from '@/app/components/UltraBackground';
 import { Toaster } from '@/app/components/ui/sonner';
+import { toast } from 'sonner';
 
 // ─── Page components ──────────────────────────────────────────────────────────
 import { AccessibilityPage } from '@/app/components/AccessibilityPage';
@@ -37,6 +42,8 @@ import { RegisterPage } from '@/app/components/RegisterPage';
 import { SecurityPage } from '@/app/components/SecurityPage';
 import { SubmitItemPage } from '@/app/components/SubmitItemPage';
 import { TermsPage } from '@/app/components/TermsPage';
+import { AttributionsPage } from '@/app/components/AttributionsPage';
+import { NotFoundPage } from '@/app/components/NotFoundPage';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -44,8 +51,35 @@ const STANDARD_PERFORMANCE_LEVELS = ['low', 'medium', 'high'] as const;
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
+const KONAMI = [
+  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+  'b', 'a',
+];
+
 function Layout() {
-  const { getColor, performanceLevel } = useTheme();
+  const { getColor, performanceLevel, setPerformanceLevel } = useTheme();
+  const keyBuffer = useRef<string[]>([]);
+  const performanceLevelRef = useRef(performanceLevel);
+
+  useEffect(() => {
+    performanceLevelRef.current = performanceLevel;
+  }, [performanceLevel]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      keyBuffer.current = [...keyBuffer.current, key].slice(-KONAMI.length);
+      if (keyBuffer.current.join(',') === KONAMI.join(',')) {
+        keyBuffer.current = [];
+        const next = performanceLevelRef.current === 'ultra' ? 'high' : 'ultra';
+        setPerformanceLevel(next);
+        toast(next === 'ultra' ? '⚡ Ultra mode activated' : 'Ultra mode off', { duration: 2500 });
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [setPerformanceLevel]);
 
   const isUltra = performanceLevel === 'ultra';
   const showStandardEffects = STANDARD_PERFORMANCE_LEVELS.includes(
@@ -68,7 +102,7 @@ function Layout() {
       <ScrollToTop />
       <NavBar />
 
-      <main className="flex-1 relative z-10">
+      <main id="main-content" className="flex-1 relative z-10">
         <Outlet />
       </main>
 
@@ -123,6 +157,8 @@ const router = createBrowserRouter([
       { path: 'terms',         element: <TermsPage /> },
       { path: 'privacy',       element: <PrivacyPage /> },
       { path: 'accessibility', element: <AccessibilityPage /> },
+      { path: 'attributions',   element: <AttributionsPage /> },
+      { path: '*',               element: <NotFoundPage /> },
       {
         path: 'admin',
         element: (

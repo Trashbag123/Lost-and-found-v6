@@ -43,9 +43,10 @@ export function NotificationBell() {
           variant="ghost"
           size="sm"
           className="relative rounded-lg cursor-pointer"
+          aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
           style={{ color: getColor('textSecondary') }}
         >
-          <Bell className="h-5 w-5" />
+          <Bell className="h-5 w-5" aria-hidden="true" />
           {unreadCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}

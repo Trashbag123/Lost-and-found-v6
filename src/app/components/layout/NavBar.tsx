@@ -1,5 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
-import { Search, Plus, Shield, Home, Package2, MessageSquare, ChevronDown, User, LogIn, Sparkles, Zap } from 'lucide-react';
+import { Shield, Package2, ChevronDown, User, LogIn, Sparkles, Zap } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { NotificationBell } from '@/app/components/NotificationBell';
@@ -23,16 +24,40 @@ export function NavBar() {
   const isActive = (path: string) => location.pathname === path;
   const isUltra = performanceLevel === 'ultra';
 
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setVisible(currentY < lastScrollY.current || currentY < 64);
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
   
   return (
-    <nav 
-      className="backdrop-blur-2xl shadow-2xl sticky top-0 z-50 border-b-3"
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:px-4 focus:py-2 focus:rounded-lg focus:font-semibold focus:text-white focus:text-sm"
+        style={{ backgroundColor: getColor('accent1') }}
+      >
+        Skip to main content
+      </a>
+      <nav
+        role="navigation"
+        aria-label="Main navigation"
+        className="backdrop-blur-2xl shadow-2xl sticky top-0 z-50 border-b-[3px] transition-transform duration-300"
+        style={{ transform: visible ? 'translateY(0)' : 'translateY(-100%)' }}
       style={{
-        backgroundColor: isUltra ? 'rgba(5, 0, 8, 0.85)' : `${getColor('bgCard')}f0`,
+        backgroundColor: isUltra ? 'rgba(5, 0, 8, 0.92)' : getColor('bgCard'),
         borderColor: getColor('border'),
         borderImage: isUltra ? `linear-gradient(90deg, ${getColor('accent1')}, ${getColor('accent2')}, ${getColor('accent3')}) 1` : 'none',
         boxShadow: isUltra ? `0 0 50px ${getColor('accent1')}40, 0 0 100px ${getColor('accent2')}20` : 'none'
@@ -41,7 +66,7 @@ export function NavBar() {
       <div className="max-w-[1600px] mx-auto px-6">
         <div className="flex justify-between h-20 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center group cursor-pointer">
+          <Link to="/" className="flex items-center group cursor-pointer" aria-label="Lost and Found — home">
             <motion.div 
               className="relative p-3 rounded-3xl mr-3"
               style={{
@@ -49,9 +74,9 @@ export function NavBar() {
                   ? `linear-gradient(135deg, ${getColor('accent1')}, ${getColor('accent2')}, ${getColor('accent3')})`
                   : `linear-gradient(135deg, ${getColor('accent1')}, ${getColor('accent2')})`,
               }}
-              whileHover={{ scale: 1.15, rotate: 360 }}
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              transition={{ duration: 0.6, type: "spring" }}
+              transition={{ duration: 0.2, type: "spring" }}
             >
               {isUltra ? (
                 <Zap className="h-8 w-8 text-black" />
@@ -110,26 +135,10 @@ export function NavBar() {
           
           {/* Nav links */}
           <div className="flex items-center gap-3">
-            <NavLink to="/" isActive={isActive('/')} icon={<Home className="h-5 w-5" />} isUltra={isUltra}>
-              Home
-            </NavLink>
-            
-            <NavLink 
-              to="/items" 
-              isActive={isActive('/items') || location.pathname.startsWith('/item/')} 
-              icon={<Search className="h-5 w-5" />}
-              isUltra={isUltra}
-            >
-              Browse
-            </NavLink>
-            
-            <NavLink to="/submit" isActive={isActive('/submit')} icon={<Plus className="h-5 w-5" />} isUltra={isUltra}>
-              Submit
-            </NavLink>
-            
-            <NavLink to="/claims" isActive={isActive('/claims')} icon={<MessageSquare className="h-5 w-5" />} isUltra={isUltra}>
-              Claims
-            </NavLink>
+            <NavLink to="/" isActive={isActive('/')} isUltra={isUltra}>Home</NavLink>
+            <NavLink to="/items" isActive={isActive('/items') || location.pathname.startsWith('/item/')} isUltra={isUltra}>Browse</NavLink>
+            <NavLink to="/submit" isActive={isActive('/submit')} isUltra={isUltra}>Submit</NavLink>
+            <NavLink to="/claims" isActive={isActive('/claims')} isUltra={isUltra}>Claims</NavLink>
             
                         <div 
               className="h-10 w-px mx-2"
@@ -140,8 +149,8 @@ export function NavBar() {
               }}
             />
             
-                        <NotificationBell />
-            
+                        {user && <NotificationBell />}
+
                         <ThemeToggle />
             
                         {user ? (
@@ -216,20 +225,19 @@ export function NavBar() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
 
 // NavLink sub-component for consistent nav item styling
-function NavLink({ 
-  to, 
-  isActive, 
-  icon, 
-  children, 
-  isUltra 
-}: { 
-  to: string; 
-  isActive: boolean; 
-  icon: React.ReactNode; 
+function NavLink({
+  to,
+  isActive,
+  children,
+  isUltra
+}: {
+  to: string;
+  isActive: boolean;
   children: React.ReactNode;
   isUltra: boolean;
 }) {
@@ -242,20 +250,21 @@ function NavLink({
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Button 
+        <Button
           variant="ghost"
           size="lg"
+          aria-current={isActive ? "page" : undefined}
           className="rounded-2xl font-bold h-12 px-6 transition-all relative overflow-hidden"
           style={isActive ? {
             background: isUltra
               ? `linear-gradient(135deg, ${getColor('accent1')}, ${getColor('accent2')})`
               : `linear-gradient(135deg, ${getColor('accent1')}, ${getColor('accent2')})`,
-            color: isUltra ? '#000000' : 'white',
+            color: 'white',
             boxShadow: `0 0 25px ${getColor('accent1')}50`,
             border: isUltra ? `2px solid ${getColor('accent3')}` : 'none'
           } : {
             color: getColor('textPrimary'),
-            background: isUltra ? `${getColor('accent1')}10` : 'transparent'
+            background: 'transparent'
           }}
         >
           {isActive && isUltra && (
@@ -273,8 +282,7 @@ function NavLink({
               transition={{ duration: 2, repeat: Infinity }}
             />
           )}
-          <span className="relative z-10 flex items-center gap-2">
-            {icon}
+          <span className="relative z-10">
             {children}
           </span>
         </Button>

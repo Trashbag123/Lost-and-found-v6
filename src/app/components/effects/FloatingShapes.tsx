@@ -75,41 +75,22 @@ export function FloatingShapes() {
             height: shape.size,
             left: shape.left,
             top: shape.top,
-            background: shape.gradient,
+            background: `radial-gradient(circle at 40% 40%, ${shape.color}80, ${shape.color}20)`,
             borderRadius: '50%',
-            opacity: performanceLevel === 'low' ? 0.15 : performanceLevel === 'medium' ? 0.25 : shape.opacity,
+            opacity: performanceLevel === 'low' ? 0.2 : performanceLevel === 'medium' ? 0.35 : 0.5,
           }}
-          animate={{
-            x: performanceLevel === 'low' 
-              ? [0, 30, 0] 
-              : performanceLevel === 'medium' 
-                ? [0, 60, 0] 
-                : [0, 100, 0],
-            y: performanceLevel === 'low' 
-              ? [0, 30, 0] 
-              : performanceLevel === 'medium' 
-                ? [0, 60, 0] 
-                : [0, 100, 0],
-            scale: performanceLevel === 'low' 
-              ? [1, 1.05, 1] 
-              : performanceLevel === 'medium' 
-                ? [1, 1.15, 1] 
-                : [1, 1.3, 1],
-            rotate: performanceLevel === 'low' 
-              ? [0, 10, 0] 
-              : performanceLevel === 'medium' 
-                ? [0, 30, 0] 
-                : [0, 360, 0],
-          }}
+          animate={
+            performanceLevel === 'low'
+              ? { x: [0, 20, 0], y: [0, 20, 0] }
+              : performanceLevel === 'medium'
+              ? { x: [0, 50, 0], y: [0, 40, 0] }
+              : { x: [0, 80, 0], y: [0, 70, 0], scale: [1, 1.2, 1] }
+          }
           transition={{
-            duration: performanceLevel === 'low' 
-              ? 15 
-              : performanceLevel === 'medium' 
-                ? 10 
-                : shape.duration,
+            duration: performanceLevel === 'low' ? 20 : performanceLevel === 'medium' ? 14 : shape.duration,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: index * 0.3,
+            delay: index * 0.5,
           }}
         />
       ))}

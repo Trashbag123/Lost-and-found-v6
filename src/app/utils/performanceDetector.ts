@@ -110,19 +110,19 @@ export function detectPerformanceLevel(): PerformanceLevel {
 
 export function getParticleCount(level: PerformanceLevel): number {
   switch (level) {
-    case 'ultra': return 800;
-    case 'high': return 200;
-    case 'medium': return 80;
-    case 'low': return 30;
+    case 'ultra': return 300;
+    case 'high': return 80;
+    case 'medium': return 35;
+    case 'low': return 15;
   }
 }
 
 export function getShapeCount(level: PerformanceLevel): number {
   switch (level) {
-    case 'ultra': return 40;
-    case 'high': return 15;
-    case 'medium': return 8;
-    case 'low': return 4;
+    case 'ultra': return 20;
+    case 'high': return 8;
+    case 'medium': return 5;
+    case 'low': return 3;
   }
 }
 

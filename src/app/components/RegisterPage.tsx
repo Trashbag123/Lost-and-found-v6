@@ -288,7 +288,7 @@ export function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
                       style={{ color: getColor('textTertiary') }}
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -354,7 +354,7 @@ export function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
                       style={{ color: getColor('textTertiary') }}
                     >
                       {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -413,7 +413,7 @@ export function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => navigate('/login')}
-                      className="font-semibold hover:underline"
+                      className="font-semibold hover:underline cursor-pointer"
                       style={{ color: getColor('accent1') }}
                     >
                       Sign in

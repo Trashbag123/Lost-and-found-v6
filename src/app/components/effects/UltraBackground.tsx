@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from '@/app/contexts/ThemeContext';
+import { throttleRAF } from '@/app/utils/performanceDetector';
 
 export function UltraBackground() {
-  const { performanceLevel } = useTheme();
+  const { performanceLevel, getColor } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -23,19 +24,19 @@ export function UltraBackground() {
     };
     resize();
 
-    // Ultra mode colors - COMPLETELY DIFFERENT
+    // Use theme accent colours so ultra mode matches the colour scheme
     const ultraColors = {
       bg: '#050008',
       blackHole: '#000000',
-      electricBlue: '#00ffff',
-      electricPurple: '#ff00ff',
-      electricYellow: '#ffff00',
-      glow: '#0066ff'
+      electricBlue: getColor('accent1'),    // cyan in ultra
+      electricPurple: getColor('accent2'),  // magenta in ultra
+      electricYellow: getColor('accent3'),  // yellow in ultra
+      glow: getColor('accent1'),
     };
 
-    // Black hole position
-    const centerX = () => canvas.width / 2;
-    const centerY = () => canvas.height / 2;
+    // Place black hole in the upper-left quadrant so it's visible alongside content
+    const centerX = () => canvas.width * 0.25;
+    const centerY = () => canvas.height * 0.3;
 
     // Lightning bolts
     class LightningBolt {
@@ -205,36 +206,37 @@ export function UltraBackground() {
       electricArcs.push(new ElectricArc());
     }
 
-    function animate() {
+    const animate = throttleRAF(() => {
       time += 0.016;
 
       // Clear with fade
       ctx.fillStyle = 'rgba(5, 0, 8, 0.2)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw event horizon glow
+      // Draw event horizon glow using theme accent colour
       const gradient = ctx.createRadialGradient(
         centerX(), centerY(), 0,
-        centerX(), centerY(), 300
+        centerX(), centerY(), 320
       );
-      gradient.addColorStop(0, 'rgba(0, 102, 255, 0.3)');
-      gradient.addColorStop(0.4, 'rgba(0, 102, 255, 0.1)');
+      gradient.addColorStop(0, `${ultraColors.electricBlue}55`);
+      gradient.addColorStop(0.3, `${ultraColors.electricPurple}22`);
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      
+
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw gravitational rings
+      // Draw gravitational rings, each using a different accent colour
+      const ringColors = [ultraColors.electricBlue, ultraColors.electricPurple, ultraColors.electricYellow];
       for (let i = 0; i < 3; i++) {
         const radius = 130 + i * 60;
         const pulse = Math.sin(time * 2 + i) * 0.3 + 0.4;
-        
+
         ctx.save();
-        ctx.strokeStyle = ultraColors.glow;
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = pulse * 0.3;
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = ultraColors.glow;
+        ctx.strokeStyle = ringColors[i];
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = pulse * 0.4;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = ringColors[i];
         ctx.beginPath();
         ctx.arc(centerX(), centerY(), radius, 0, Math.PI * 2);
         ctx.stroke();
@@ -267,14 +269,15 @@ export function UltraBackground() {
       ctx.arc(centerX(), centerY(), 120, 0, Math.PI * 2);
       ctx.fill();
 
-      // Core glow
+      // Core glow — pulses between accent1 and accent2
+      const glowColor = Math.sin(time * 2) > 0 ? ultraColors.electricBlue : ultraColors.electricPurple;
       ctx.save();
-      ctx.fillStyle = ultraColors.glow;
-      ctx.shadowBlur = 60;
-      ctx.shadowColor = ultraColors.glow;
-      ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.2;
+      ctx.fillStyle = glowColor;
+      ctx.shadowBlur = 80;
+      ctx.shadowColor = glowColor;
+      ctx.globalAlpha = 0.4 + Math.sin(time * 3) * 0.15;
       ctx.beginPath();
-      ctx.arc(centerX(), centerY(), 50, 0, Math.PI * 2);
+      ctx.arc(centerX(), centerY(), 45, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
@@ -293,7 +296,7 @@ export function UltraBackground() {
       });
 
       animationId = requestAnimationFrame(animate);
-    }
+    }, 60);
 
     animate();
 

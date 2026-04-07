@@ -77,11 +77,39 @@ export function LoginPage() {
   };
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center p-4"
+    <div
+      className="min-h-screen flex items-center justify-center p-6"
       style={{ backgroundColor: getColor('bgPrimary') }}
     >
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-3xl flex flex-col lg:flex-row gap-10 items-start">
+
+        {/* Benefits panel */}
+        <div className="flex-1 lg:pt-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-8" style={{ background: getColor('accent1') }} />
+            <span className="text-xs font-bold tracking-widest uppercase" style={{ color: getColor('accent1') }}>
+              Why sign in?
+            </span>
+          </div>
+          <h2 className="text-2xl font-black mb-6" style={{ color: getColor('textPrimary') }}>
+            Track everything in one place.
+          </h2>
+          <div className="space-y-6">
+            {[
+              { title: 'See all your claims', desc: 'Every claim you submit is saved to your profile so you can check status anytime without digging for a claim ID.' },
+              { title: 'Notifications', desc: "Get notified the moment your claim is approved or rejected — no need to keep checking back." },
+              { title: 'Faster submissions', desc: 'Your name and email are pre-filled on forms so submitting a found item takes seconds.' },
+            ].map((b) => (
+              <div key={b.title}>
+                <p className="text-sm font-semibold mb-1" style={{ color: getColor('textPrimary') }}>{b.title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: getColor('textSecondary') }}>{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Login form */}
+        <div className="w-full lg:w-80 shrink-0">
         {/* Header */}
         <div className="text-center mb-8">
           <div 
@@ -90,8 +118,8 @@ export function LoginPage() {
           >
             <User className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: getColor('textPrimary') }}>Welcome Back</h1>
-          <p style={{ color: getColor('textSecondary') }}>Sign in to your account</p>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: getColor('textPrimary') }}>Welcome back</h1>
+          <p style={{ color: getColor('textSecondary') }}>Sign in to track your claims and notifications</p>
         </div>
 
         {/* Login Card */}
@@ -102,7 +130,7 @@ export function LoginPage() {
             borderColor: getColor('border')
           }}
         >
-          <CardHeader 
+          <CardHeader
             className="pb-6 border-b"
             style={{
               background: `linear-gradient(to right, ${getColor('accent2')}10, transparent)`,
@@ -110,7 +138,7 @@ export function LoginPage() {
             }}
           >
             <CardTitle className="text-2xl" style={{ color: getColor('textPrimary') }}>Sign In</CardTitle>
-            <CardDescription style={{ color: getColor('textSecondary') }}>Enter your credentials to continue</CardDescription>
+            <CardDescription style={{ color: getColor('textSecondary') }}>Use the username and password you registered with</CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -178,7 +206,7 @@ export function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
                     style={{ color: getColor('textTertiary') }}
                   >
                     {showPassword ? (
@@ -225,7 +253,7 @@ export function LoginPage() {
                   <button
                     type="button"
                     onClick={() => navigate('/register')}
-                    className="font-semibold hover:underline"
+                    className="font-semibold hover:underline cursor-pointer"
                     style={{ color: getColor('accent2') }}
                   >
                     Sign up
@@ -247,6 +275,7 @@ export function LoginPage() {
             </form>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

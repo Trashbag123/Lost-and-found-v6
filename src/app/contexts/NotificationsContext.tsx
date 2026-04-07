@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Package, CheckCircle, MessageSquare, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 export interface Notification {
   id: number;
@@ -26,54 +27,66 @@ interface NotificationsContextType {
 
 const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
 
+const SAMPLE_NOTIFICATIONS: Notification[] = [
+  {
+    id: 1,
+    type: 'new_item',
+    icon: Package,
+    title: 'New Item Found',
+    message: 'A blue backpack matching your description was just reported',
+    time: '5 minutes ago',
+    unread: true
+  },
+  {
+    id: 2,
+    type: 'claim_approved',
+    icon: CheckCircle,
+    title: 'Claim Approved',
+    message: 'Your claim for "Calculator TI-84" has been verified',
+    time: '1 hour ago',
+    unread: true
+  },
+  {
+    id: 3,
+    type: 'message',
+    icon: MessageSquare,
+    title: 'New Message',
+    message: 'Admin has responded to your inquiry about the water bottle',
+    time: '3 hours ago',
+    unread: true
+  },
+  {
+    id: 4,
+    type: 'match',
+    icon: TrendingUp,
+    title: 'Possible Match',
+    message: '3 new items match your saved search criteria',
+    time: '1 day ago',
+    unread: false
+  },
+  {
+    id: 5,
+    type: 'new_item',
+    icon: Package,
+    title: 'Item Reported',
+    message: 'Someone found a red water bottle near the gymnasium',
+    time: '2 days ago',
+    unread: false
+  }
+];
+
 export function NotificationsProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      type: 'new_item',
-      icon: Package,
-      title: 'New Item Found',
-      message: 'A blue backpack matching your description was just reported',
-      time: '5 minutes ago',
-      unread: true
-    },
-    {
-      id: 2,
-      type: 'claim_approved',
-      icon: CheckCircle,
-      title: 'Claim Approved',
-      message: 'Your claim for "Calculator TI-84" has been verified',
-      time: '1 hour ago',
-      unread: true
-    },
-    {
-      id: 3,
-      type: 'message',
-      icon: MessageSquare,
-      title: 'New Message',
-      message: 'Admin has responded to your inquiry about the water bottle',
-      time: '3 hours ago',
-      unread: true
-    },
-    {
-      id: 4,
-      type: 'match',
-      icon: TrendingUp,
-      title: 'Possible Match',
-      message: '3 new items match your saved search criteria',
-      time: '1 day ago',
-      unread: false
-    },
-    {
-      id: 5,
-      type: 'new_item',
-      icon: Package,
-      title: 'Item Reported',
-      message: 'Someone found a red water bottle near the gymnasium',
-      time: '2 days ago',
-      unread: false
+  const { isAuthenticated } = useAuth();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Load notifications when user logs in, clear when they log out
+  useEffect(() => {
+    if (isAuthenticated) {
+      setNotifications(SAMPLE_NOTIFICATIONS);
+    } else {
+      setNotifications([]);
     }
-  ]);
+  }, [isAuthenticated]);
 
   const [enabledNotifications, setEnabledNotifications] = useState({
     newItems: true,

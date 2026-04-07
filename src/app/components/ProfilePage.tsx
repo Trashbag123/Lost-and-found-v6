@@ -1,15 +1,30 @@
 import { useAuth } from '@/app/contexts/AuthContext';
 import { useTheme } from '@/app/contexts/ThemeContext';
+import { useClaims } from '@/app/contexts/ClaimsContext';
 import { useNavigate } from 'react-router';
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { User, Mail, Calendar, Shield, LogOut, Package, CheckCircle } from 'lucide-react';
+import { User, Mail, Calendar, Shield, LogOut, CheckCircle, Clock, AlertCircle, MessageSquare } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function ProfilePage() {
   const { user, logout, isAuthenticated } = useAuth();
   const { getColor } = useTheme();
+  const { getClaimsByEmail } = useClaims();
   const navigate = useNavigate();
+
+  const userClaims = user ? getClaimsByEmail(user.email) : [];
+
+  const statusIcon = (status: string) => {
+    if (status === 'verified') return <CheckCircle className="h-4 w-4 text-green-500" />;
+    if (status === 'rejected') return <AlertCircle className="h-4 w-4 text-red-500" />;
+    return <Clock className="h-4 w-4 text-yellow-500" />;
+  };
+  const statusLabel = (status: string) => {
+    if (status === 'verified') return 'Approved — Ready for pickup';
+    if (status === 'rejected') return 'Unable to verify';
+    return 'Pending review';
+  };
 
   if (!isAuthenticated || !user) {
     return (
@@ -156,12 +171,9 @@ export function ProfilePage() {
           >
             
             {/* Quick Stats */}
-            <Card 
+            <Card
               className="border-2 rounded-3xl"
-              style={{ 
-                backgroundColor: getColor('bgCard'),
-                borderColor: getColor('border')
-              }}
+              style={{ backgroundColor: getColor('bgCard'), borderColor: getColor('border') }}
             >
               <CardHeader className="border-b" style={{ borderColor: getColor('border') }}>
                 <CardTitle className="text-xl font-black" style={{ color: getColor('textPrimary') }}>
@@ -169,67 +181,16 @@ export function ProfilePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  <div 
-                    className="p-5 rounded-2xl"
-                    style={{ backgroundColor: `${getColor('accent1')}10` }}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${getColor('accent1')}30` }}
-                      >
-                        <Package className="h-5 w-5" style={{ color: getColor('accent1') }} />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-black" style={{ color: getColor('textPrimary') }}>0</p>
-                        <p className="text-xs font-semibold" style={{ color: getColor('textSecondary') }}>
-                          Items Posted
-                        </p>
-                      </div>
-                    </div>
+                <div className="grid grid-cols-2 gap-5">
+                  <div className="p-5 rounded-2xl" style={{ backgroundColor: `${getColor('accent2')}10` }}>
+                    <p className="text-3xl font-black mb-1" style={{ color: getColor('accent2') }}>{userClaims.length}</p>
+                    <p className="text-xs font-semibold" style={{ color: getColor('textSecondary') }}>Claims submitted</p>
                   </div>
-
-                  <div 
-                    className="p-5 rounded-2xl"
-                    style={{ backgroundColor: `${getColor('accent2')}10` }}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${getColor('accent2')}30` }}
-                      >
-                        <CheckCircle className="h-5 w-5" style={{ color: getColor('accent2') }} />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-black" style={{ color: getColor('textPrimary') }}>0</p>
-                        <p className="text-xs font-semibold" style={{ color: getColor('textSecondary') }}>
-                          Claims Made
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div 
-                    className="p-5 rounded-2xl"
-                    style={{ backgroundColor: `${getColor('accent3')}10` }}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${getColor('accent3')}30` }}
-                      >
-                        <User className="h-5 w-5" style={{ color: getColor('accent3') }} />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-black" style={{ color: getColor('textPrimary') }}>
-                          {user.isAdmin ? 'Admin' : 'User'}
-                        </p>
-                        <p className="text-xs font-semibold" style={{ color: getColor('textSecondary') }}>
-                          Account Type
-                        </p>
-                      </div>
-                    </div>
+                  <div className="p-5 rounded-2xl" style={{ backgroundColor: `${getColor('accent3')}10` }}>
+                    <p className="text-3xl font-black mb-1" style={{ color: getColor('accent3') }}>
+                      {userClaims.filter(c => c.status === 'verified').length}
+                    </p>
+                    <p className="text-xs font-semibold" style={{ color: getColor('textSecondary') }}>Claims approved</p>
                   </div>
                 </div>
               </CardContent>
@@ -317,19 +278,60 @@ export function ProfilePage() {
                   </div>
                 </div>
 
-                <div 
-                  className="p-5 rounded-2xl border-2"
-                  style={{ 
-                    backgroundColor: `${getColor('accent2')}10`,
-                    borderColor: `${getColor('accent2')}50`
-                  }}
-                >
-                  <p className="text-sm" style={{ color: getColor('textSecondary') }}>
-                    <strong style={{ color: getColor('accent2') }}>Note:</strong> This is a demo account system. 
-                    In a production environment, additional security features would be implemented including 
-                    email verification, two-factor authentication, and password recovery options.
-                  </p>
-                </div>
+              </CardContent>
+            </Card>
+
+            {/* My Claims */}
+            <Card
+              className="border-2 rounded-3xl"
+              style={{ backgroundColor: getColor('bgCard'), borderColor: getColor('border') }}
+            >
+              <CardHeader className="border-b" style={{ borderColor: getColor('border') }}>
+                <CardTitle className="text-xl font-black" style={{ color: getColor('textPrimary') }}>
+                  My Claims
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                {userClaims.length === 0 ? (
+                  <div className="text-center py-10">
+                    <MessageSquare className="h-10 w-10 mx-auto mb-3 opacity-30" style={{ color: getColor('textSecondary') }} />
+                    <p className="text-sm font-medium mb-1" style={{ color: getColor('textPrimary') }}>No claims yet</p>
+                    <p className="text-xs" style={{ color: getColor('textSecondary') }}>
+                      Claims you submit will appear here so you can track their status.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {userClaims.map((claim) => (
+                      <div
+                        key={claim.id}
+                        className="flex items-start justify-between gap-4 p-4 rounded-xl border"
+                        style={{ borderColor: getColor('border'), backgroundColor: getColor('bgSecondary') }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm truncate mb-0.5" style={{ color: getColor('textPrimary') }}>
+                            {claim.itemName}
+                          </p>
+                          <p className="text-xs" style={{ color: getColor('textTertiary') }}>
+                            {new Date(claim.submittedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            {' · '}ID: {claim.id}
+                          </p>
+                          {claim.adminNotes && (
+                            <p className="text-xs mt-1 italic" style={{ color: getColor('textTertiary') }}>
+                              "{claim.adminNotes}"
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {statusIcon(claim.status)}
+                          <span className="text-xs font-medium" style={{ color: getColor('textSecondary') }}>
+                            {statusLabel(claim.status)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 

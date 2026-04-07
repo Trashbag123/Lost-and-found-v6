@@ -1,44 +1,22 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { detectPerformanceLevel, PerformanceLevel } from '@/app/utils/performanceDetector';
 
-/**
- * ThemeMode Type
- * Defines all available theme options in the application
- * - light: Standard light mode with vibrant colors
- * - dark: Dark mode with high contrast
- * - deuteranopia: Red-green colorblind friendly (uses blue/yellow/orange)
- * - protanopia: Red-blind friendly (uses teal/blue/yellow)
- * - tritanopia: Blue-yellow colorblind friendly (uses cyan/pink/red)
- */
+// the 5 theme options — includes 3 colorblind-friendly modes
 export type ThemeMode = 'light' | 'dark' | 'deuteranopia' | 'protanopia' | 'tritanopia';
 
-/**
- * ThemeContext Type Definition
- * Provides theme state and color management throughout the application
- */
 interface ThemeContextType {
-  theme: ThemeMode;              // Current active theme
-  setTheme: (theme: ThemeMode) => void;  // Switch to different theme
-  getColor: (colorKey: string) => string;  // Get theme-specific color value
-  performanceLevel: PerformanceLevel;  // Device performance level
-  setPerformanceLevel: (level: PerformanceLevel) => void;  // Override performance level
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  getColor: (colorKey: string) => string;
+  performanceLevel: PerformanceLevel;
+  setPerformanceLevel: (level: PerformanceLevel) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-/**
- * Color Configurations
- * Complete color palette for each theme mode
- * All themes maintain the same color keys for consistency,
- * but with different values optimized for each viewing condition
- * 
- * Color Keys:
- * - bgPrimary/Secondary/Tertiary: Background layers
- * - bgCard/CardHover: Card backgrounds with transparency
- * - textPrimary/Secondary/Tertiary: Text hierarchy
- * - border/borderHover: Border colors and states
- * - accent1/2/3: Primary action colors with light/dark variants
- */
+// every theme uses the same color keys so components don't need to know which theme is active,
+// they just call getColor('accent1') and get the right value for whatever mode is on
+
 const themeColors = {
   light: {
     // Backgrounds - Ultra bright white with electric glow

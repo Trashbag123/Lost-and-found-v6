@@ -1,6 +1,6 @@
 import { useTheme } from '@/app/contexts/ThemeContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { HelpCircle, Search, MessageCircle, Book } from 'lucide-react';
+import { HelpCircle, MessageCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function HelpPage() {
@@ -52,9 +52,9 @@ export function HelpPage() {
         </motion.div>
 
         <div className="space-y-5">
-          {faqs.map((faq) => (
+          {faqs.map((faq, index) => (
             <motion.div
-              key={faq.q}
+              key={faq.question}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -68,7 +68,7 @@ export function HelpPage() {
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg font-black flex items-start gap-3" style={{ color: getColor('textPrimary') }}>
-                    <div 
+                    <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
                       style={{ backgroundColor: `${getColor('accent1')}20` }}
                     >

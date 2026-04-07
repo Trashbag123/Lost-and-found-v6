@@ -88,9 +88,11 @@ export function UltraParticleTrails() {
 
     const animate = () => {
       time += 0.02;
-      
-      // Fade effect for trails
-      ctx.fillStyle = `rgba(0, 0, 0, ${isDark ? 0.05 : 0.02})`;
+
+      // Fade effect — dark mode fades to black, light mode fades to white
+      ctx.fillStyle = isDark
+        ? 'rgba(0, 0, 0, 0.06)'
+        : 'rgba(255, 255, 255, 0.08)';
       ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
       trails.forEach((particle, index) => {
@@ -124,15 +126,14 @@ export function UltraParticleTrails() {
           ctx.moveTo(t1.x, t1.y);
           ctx.lineTo(t2.x, t2.y);
           
-          // Rainbow gradient effect
-          const hue = (time * 50 + index * 30) % 360;
-          ctx.strokeStyle = `hsla(${hue}, 100%, 60%, ${alpha})`;
+          // Trail colour — mix rainbow shimmer with the particle's theme-accent colour
+          const hue = (time * 30 + index * 20) % 360;
+          const trailColor = alpha > 0.5 ? particle.color : `hsla(${hue}, 90%, 65%, ${alpha})`;
+          ctx.strokeStyle = trailColor;
           ctx.lineWidth = particle.size * (i / particle.trail.length);
           ctx.lineCap = 'round';
-          ctx.stroke();
 
-          // Glow effect
-          ctx.shadowBlur = 20;
+          ctx.shadowBlur = 15;
           ctx.shadowColor = particle.color;
           ctx.stroke();
           ctx.shadowBlur = 0;

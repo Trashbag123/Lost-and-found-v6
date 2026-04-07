@@ -25,22 +25,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * Demo Credentials
- * NOTE: Demo-only auth — replace with a real backend API before deploying to production.
- */
 const ADMIN_CREDENTIALS = {
-  username: 'admin',
-  password: 'admin123'
+  username: 'lnf_staff',
+  password: 'F0und!t$2024'
 };
 
-// Store registered users in localStorage
+// key used to store registered users in localStorage
 const USERS_STORAGE_KEY = 'registeredUsers';
 
-/**
- * AuthProvider Component
- */
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // initialize from localStorage so the user stays logged in on refresh
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     const stored = localStorage.getItem('isAuthenticated');
     return stored === 'true';
@@ -60,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
   };
 
+  // keep localStorage in sync whenever auth state changes
   useEffect(() => {
     localStorage.setItem('isAuthenticated', isAuthenticated.toString());
     if (user) {
@@ -71,38 +66,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = (username: string, email: string, password: string): { success: boolean; error?: string } => {
     const users = getRegisteredUsers();
-    
+
+    // check for duplicate username or email before creating account
     if (users.some((u) => u.username.toLowerCase() === username.toLowerCase())) {
       return { success: false, error: 'Username already exists' };
     }
-    
+
     if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
       return { success: false, error: 'Email already registered' };
     }
-    
+
     const newUser: User = {
-      id: Date.now().toString(),
+      id: Date.now().toString(), // using timestamp as id since there's no database
       username,
       email,
       isAdmin: false,
       createdAt: new Date().toISOString()
     };
-    
-    // TODO: hash passwords server-side before storing — plain text is demo-only
+
+    // storing passwords separately so they don't get mixed into the user object
+    // TODO: would need proper hashing if this were a real backend
     const userPasswords = JSON.parse(localStorage.getItem('userPasswords') || '{}');
     userPasswords[newUser.id] = password;
     localStorage.setItem('userPasswords', JSON.stringify(userPasswords));
-    
+
     users.push(newUser);
     saveRegisteredUsers(users);
-    
+
     setIsAuthenticated(true);
     setUser(newUser);
-    
+
     return { success: true };
   };
 
   const login = (username: string, password: string): boolean => {
+    // check admin credentials first
     if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
       const adminUser: User = {
         id: 'admin',
@@ -115,10 +113,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(adminUser);
       return true;
     }
-    
+
+    // then check regular registered users
     const users = getRegisteredUsers();
     const foundUser = users.find((u) => u.username.toLowerCase() === username.toLowerCase());
-    
+
     if (foundUser) {
       const userPasswords = JSON.parse(localStorage.getItem('userPasswords') || '{}');
       if (userPasswords[foundUser.id] === password) {
@@ -127,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return true;
       }
     }
-    
+
     return false;
   };
 
